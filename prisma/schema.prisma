@@ -1,0 +1,290 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+
+model User {
+  id            String          @id @default(cuid())
+  name          String
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String          @default("")
+  accounts      Account[]
+ 
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  student       Student?
+  teacher       Teacher?
+  admin         Admin?
+  notifications Notification[]
+}
+ 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+ 
+  @@id([provider, providerAccountId])
+  @@index([userId])
+}
+
+model GradeList {
+  id          String      @id @default(cuid())
+  name        String
+  classId     Class[]
+  subjects    Subject[]
+  students    Student[]
+  exams       Exam[]
+  courses     Textbook[]
+}
+
+model Student {
+  id              String       @id @default(cuid())
+  userId          String       @unique
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name            String
+  enrollmentDate  DateTime     @default(now())
+  classId         String?
+  class           Class?       @relation(fields: [classId], references: [id])
+  submissions     Submission[]
+  examAttempts    ExamAttempt[]
+  certificates    Certificate[]
+  gradeId         String?
+  grade           GradeList?    @relation(fields: [gradeId], references: [id])
+
+  @@index([classId])
+  @@index([gradeId])
+}
+
+model Teacher {
+  id        String    @id @default(cuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name      String
+  classId   String?
+  classes   Class?      @relation(fields: [classId], references: [id])  
+  subjectId String?   
+  subjects  Subject?   @relation( fields: [subjectId], references: [id])
+  assignments Assignment[]
+  exams     Exam[]
+  courses   Textbook[]
+  teacherClass  TeacherClass[]
+
+  @@index([subjectId])
+  @@index([classId])
+}
+
+model TeacherClass {
+  id        String    @id @default(cuid())
+  classId   String
+  class     Class     @relation(fields: [classId], references: [id])
+  teacherId String
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+
+  @@index([classId])
+  @@index([teacherId])
+}
+
+model Admin {
+  id     String  @id @default(cuid())
+  userId String  @unique
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  report Report[]   
+  name   String
+}
+
+model Class {
+  id          String      @id @default(cuid())
+  name        String      
+  createdAt   DateTime    @default(now())
+  teacherId   String?
+  studentId   String?
+  teacher     Teacher[]    
+  students    Student[]
+  assignments Assignment[]
+  gradeId     String
+  grade       GradeList  @relation(fields: [gradeId], references: [id])
+  teacherClass  TeacherClass[]
+
+  @@index([teacherId])
+  @@index([gradeId])
+}
+
+model Subject {
+  id          String   @id @default(cuid())
+  name        String   
+  description String?
+  gradeId     String?
+  grade       GradeList?   @relation(fields: [gradeId], references: [id])
+  teacher     Teacher[]    
+  assignments Assignment[]
+  exams       Exam[]
+  textbooks   Textbook[]
+
+  @@index([gradeId])
+}
+
+model Assignment {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  dueDate     DateTime
+  subjectId   String?
+  subject     Subject?      @relation(fields: [subjectId], references: [id])
+  teacherId   String
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
+  classId     String
+  class       Class        @relation(fields: [classId], references: [id])
+  submissions Submission[]
+  form        AssignmentForm[]
+  @@index([subjectId])
+  @@index([teacherId])
+  @@index([classId])
+}
+
+model AssignmentForm {
+  id            String       @id @default(cuid())
+  assignmentId  String
+  assignment    Assignment   @relation(fields: [assignmentId], references: [id])
+  question      String
+  choices       Json
+  correctAnswer String
+
+  @@index([assignmentId])
+}
+
+model Exam {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  duration    Int          // in minutes
+  totalMarks  Int
+  subjectId   String
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  teacherId   String
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
+  gradeId     String
+  grade       GradeList   @relation(fields: [gradeId], references: [id])
+  examAttempts ExamAttempt[]
+  certificates Certificate[]
+  form         ExamForm[]
+  @@index([subjectId])
+  @@index([teacherId])
+  @@index([gradeId])
+}
+
+model ExamForm {
+  id            String       @id @default(cuid())
+  examId        String
+  exam          Exam   @relation(fields: [examId], references: [id])
+  question      String
+  choices       Json
+  correctAnswer String
+  mark          Int
+
+  @@index([examId])
+}
+
+model Submission {
+  id            String    @id @default(cuid())
+  studentId     String
+  student       Student   @relation(fields: [studentId], references: [id])
+  assignmentId  String
+  assignment    Assignment @relation(fields: [assignmentId], references: [id])
+  fileUrl       String
+  grade         Float?
+  submittedAt   DateTime  @default(now())
+  @@index([studentId])
+  @@index([assignmentId])
+}
+
+model ExamAttempt {
+  id          String    @id @default(cuid())
+  studentId   String
+  student     Student   @relation(fields: [studentId], references: [id])
+  examId      String
+  exam        Exam      @relation(fields: [examId], references: [id])
+  score       Float?
+  completedAt DateTime? @default(now())
+  @@index([studentId])
+  @@index([examId])
+}
+
+model Textbook {
+  id          String   @id @default(cuid())
+  title       String
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id])
+  teacherId   String
+  teacher     Teacher  @relation(fields: [teacherId], references: [id])
+  gradeId     String
+  grade       GradeList @relation(fields: [gradeId], references: [id])
+  fileUrl     String
+  @@index([subjectId])
+  @@index([gradeId])
+  @@index([teacherId])
+}
+
+model Certificate {
+  id            String    @id @default(cuid())
+  studentId     String
+  student       Student   @relation(fields: [studentId], references: [id])
+  examId        String?
+  exam          Exam?     @relation(fields: [examId], references: [id])
+  issuedAt      DateTime  @default(now())
+  
+  @@index([studentId])
+  @@index([examId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  action    String
+  target    String
+  unread    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model Report {
+  id          String    @id @default(cuid())
+  adminId     String
+  admin       Admin     @relation(fields: [adminId], references: [id])
+  targetId    String
+  reportType  String
+  data        Json
+  createdAt   DateTime  @default(now())
+
+  @@index([adminId])
+}
