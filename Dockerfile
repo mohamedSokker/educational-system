@@ -17,6 +17,9 @@ RUN npx prisma generate
 # Copy the rest of the application
 COPY . .
 
+ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+
 # Build the application
 RUN npm run build
 

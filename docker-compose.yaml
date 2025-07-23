@@ -5,10 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: dup3kjfao
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dup3kjfao
     env_file:
       - .env
     volumes:
