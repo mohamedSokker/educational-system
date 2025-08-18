@@ -1,0 +1,11 @@
+/* src/components/CRP5.css */
+.crp5-container { display: flex; gap: 30px; }
+.crp5-interactive-area { position: relative; width: 440px; height: 440px; }
+.base-computer, .rotating-disc {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+}
+.rotating-disc { cursor: grab; }
+.rotating-disc:active { cursor: grabbing; }
+.crp5-readout-panel { padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; }
+.readout-group { margin-bottom: 20px; }
+.result { font-weight: bold; font-size: 1.1em; color: #005A9C; }

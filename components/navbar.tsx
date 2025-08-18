@@ -40,6 +40,7 @@ export default async function Navbar() {
           { href: "/students", label: "Students" },
           { href: "/classes", label: "Classes" },
           { href: "/user-roles", label: "Users" },
+          { href: "/CRP5", label: "CRP5" },
         ]
       : // : session?.user.role === "Teacher"
         // ? [{ href: "/", label: "Dashboard" }]

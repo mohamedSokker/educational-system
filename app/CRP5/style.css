@@ -1,0 +1,254 @@
+div.fltCompsWaitPanel {
+  position: fixed;
+  vertical-align: middle;
+  margin: -90px 0 0 -60px;
+  left: 50%;
+  top: 50%;
+  z-index: 1005;
+  text-align: center;
+}
+
+canvas.fltCompsCanvas {
+  position: relative;
+}
+
+[className^="icon-"]:before,
+[className*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  margin-left: 0.2em;
+  color: gray;
+}
+
+.icon-cancel-circled:before {
+  content: "×"; /* use multiplication sign (U+00D7) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: gray;
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.icon-compass:before {
+  content: "\1F9ED";
+  filter: grayscale(100%);
+}
+
+.icon-arrows-ccw:before {
+  content: "\1F503";
+  filter: grayscale(100%);
+}
+
+.icon-pencil:before {
+  content: "\270F\FE0F"; /* ✏️ pencil emoji */
+  display: inline-block;
+  transform: rotate(90deg);
+  filter: grayscale(100%);
+}
+
+.icon-trash:before {
+  content: "\1F5D1";
+  filter: grayscale(100%);
+}
+
+.icon-plus:before {
+  content: "+";
+  filter: grayscale(100%);
+}
+
+.icon-minus:before {
+  content: "-";
+  filter: grayscale(100%);
+}
+
+.ui-slider-dot .ui-slider-handle:after {
+  content: "\2299";
+  font-size: 6px;
+  line-height: 50px;
+  font-family: "fontello";
+  z-index: 1000;
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  width: 50px;
+  height: 50px;
+  text-decoration: none;
+  padding-left: 23px;
+}
+
+.ui-slider-dot .ui-slider-vertical {
+  background-color: rgba(216, 216, 216, 0.502);
+  box-shadow: 0 1px 0 0 #fff;
+  width: 4px;
+}
+
+.ui-slider-dot .ui-slider {
+  position: relative;
+  text-align: left;
+}
+.ui-slider-vertical {
+  width: 8px;
+  height: 100px;
+}
+
+div.pictogram {
+  font-family: fontello;
+  font-size: 1.5em;
+  cursor: pointer;
+  text-align: center;
+  display: block;
+  position: relative;
+  line-height: 1;
+  vertical-align: middle;
+  padding: 5px;
+}
+
+.fltCompBoldColor {
+  color: #46494c;
+}
+
+.fltCompNormalColor {
+  color: #999;
+}
+
+div.groupDiv {
+  border: 1px solid #d8d8d8;
+  border-radius: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+div.separatorBelow {
+  border-bottom: 1px solid #d8d8d8;
+}
+
+div.controlsActive,
+div.controlsInactive {
+  background: White;
+  padding: 0;
+  width: 50px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 2px;
+  position: relative;
+}
+
+div.controlsActive {
+  box-shadow: 0px 0px 4px #444444;
+  z-index: 501;
+  color: #46494c;
+}
+
+div.controlsInactive {
+  z-index: 200;
+  color: #999;
+  height: auto;
+}
+
+td.groupTop,
+td.groupMiddle,
+td.groupBottom {
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+}
+
+td.groupTop {
+  border-top: 1px solid black;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+
+td.groupTop {
+  border-bottom: 1px solid black;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+div.fltCompsCloseBtn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+div.fltCompsContent {
+  display: none;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(5, 16, 27, 0.8);
+  width: 100%;
+  height: 100%;
+  z-index: 12;
+}
+
+div.fltCompsControls {
+  top: 20px;
+  left: 20px;
+  position: absolute;
+  z-index: 1000;
+}
+
+.fltCompImage {
+  visibility: hidden;
+  position: fixed;
+  top: -5000px;
+  left: -5000px;
+}
+
+table.fltCompWrapper {
+  width: 99%;
+  height: 99%;
+}
+
+.fltCompSliderHandle {
+  position: absolute;
+  background: #46494c;
+  width: 30px;
+  height: 5px;
+  margin-left: -13px;
+  cursor: s-resize;
+}
+
+.fltCompSliderRail {
+  position: relative;
+  background: #999;
+  text-align: center;
+  width: 4px;
+  height: 150px;
+  margin: 0 23px 0 23px;
+}
+
+div.fltCompsDrawDotSuppNormal {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background-color: #999;
+  box-shadow: 0px 1px 1px #909090 inset;
+}
+
+div.fltCompsDrawDotSuppBold {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background-color: #46494c;
+  box-shadow: 0px 1px 1px #a0a0a0 inset;
+}
