@@ -254,7 +254,7 @@ FlightComputersWrapper.prototype.showComputer = function (computerIdx) {
 };
 
 FlightComputersWrapper.prototype.loadComputer = function (computerIdx) {
-  document.getElementById("fltCompsWaitPanel").style.display = "";
+  document.getElementById("fltCompsWaitPanel").style.display = "block";
 
   this.loadedImages[computerIdx] = [];
 
