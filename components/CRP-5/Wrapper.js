@@ -8,31 +8,131 @@ export function setWrapperInstance(instance) {
   fltCompsWrapper = instance;
 }
 
-function initSliders() {
+function zoomUpdateSlider(val, eventType = "slide") {
   const slider = document.getElementById("fltCmpSlider");
+  const handle = document.querySelector("#fltCmpSlider .ui-slider-handle");
+  const range = document.querySelector("#fltCmpSlider .ui-slider-range");
+  const zoomBox = document.getElementById("tbZoom");
 
-  if (slider) {
-    // Set min and max
-    slider.min = 40;
-    slider.max = 200;
+  const min = 40;
+  const max = 200;
+  let value = parseInt(zoomBox.value, 10) || min;
 
-    // Handle 'input' (live, as user slides) and 'change' (on release)
-    const handleSlide = (event) => {
-      zoomSliderChanged(event); // Your existing callback function
-    };
+  value = Math.min(max, Math.max(min, val));
+  const percent = ((value - min) / (max - min)) * 100;
 
-    slider.addEventListener("input", handleSlide); // Live update
-    slider.addEventListener("change", handleSlide); // Final change (on release)
+  // update slider visuals
+  handle.style.bottom = percent + "%";
+  range.style.height = percent + "%";
+
+  // update input box
+  if (zoomBox.value !== String(value)) {
+    zoomBox.value = value;
   }
+
+  fltCompsWrapper?.changeZoom(value);
 }
+
+function initSliders() {
+  console.log("initSliders runs");
+  const slider = document.getElementById("fltCmpSlider");
+  const handle = document.querySelector("#fltCmpSlider .ui-slider-handle");
+  const range = document.querySelector("#fltCmpSlider .ui-slider-range");
+  const zoomBox = document.getElementById("tbZoom");
+
+  if (!slider || !handle || !range || !zoomBox) return;
+
+  slider.min = 40;
+  slider.max = 200;
+  const min = 40;
+  const max = 200;
+  let value = parseInt(zoomBox.value, 10) || min;
+  let dragging = false;
+
+  // update UI + call zoomSliderChanged
+  function updateSlider(val, eventType = "slide") {
+    value = Math.min(max, Math.max(min, val));
+    const percent = ((value - min) / (max - min)) * 100;
+
+    // update slider visuals
+    handle.style.bottom = percent + "%";
+    range.style.height = percent + "%";
+
+    // update input box
+    if (zoomBox.value !== String(value)) {
+      zoomBox.value = value;
+    }
+
+    fltCompsWrapper?.changeZoom(value);
+
+    // call original callback
+    // if (typeof zoomSliderChanged === "function") {
+    //   zoomSliderChanged({ type: eventType }, { value });
+    // }
+  }
+
+  // dragging logic
+  handle.addEventListener("mousedown", (e) => {
+    dragging = true;
+    e.preventDefault();
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (dragging) {
+      dragging = false;
+      updateSlider(value, "change"); // final change event
+    }
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const rect = slider.getBoundingClientRect();
+    const offsetY = rect.bottom - e.clientY;
+    const percent = Math.min(100, Math.max(0, (offsetY / rect.height) * 100));
+    const newValue = min + ((max - min) * percent) / 100;
+    updateSlider(Math.round(newValue), "slide");
+  });
+
+  // input box change → update slider position
+  zoomBox.addEventListener("input", (e) => {
+    const newVal = parseInt(e.target.value, 10);
+    if (!isNaN(newVal)) {
+      updateSlider(newVal, "change");
+    }
+  });
+
+  // initialize
+  updateSlider(value, "init");
+}
+
+// Handle 'input' (live, as user slides) and 'change' (on release)
+// const handleSlide = (event) => {
+//   console.log(event);
+//   zoomSliderChanged(event); // Your existing callback function
+// };
+
+// function initSliders() {
+//   console.log(`initSliders runs`);
+//   const slider = document.getElementById("fltCmpSlider");
+
+//   if (slider) {
+//     // Set min and max
+//     slider.min = 40;
+//     slider.max = 200;
+
+//     slider.addEventListener("drag", handleSlide); // Live update
+//     slider.addEventListener("change", handleSlide); // Final change (on release)
+//   }
+// }
 
 var triggerChanged = true;
 
 function zoomSliderChanged(event, ui) {
+  console.log(`zoomSliderChanged triggered`);
   if (triggerChanged) {
     document.getElementById("tbZoom").value = ui.value;
 
-    fltCompsWrapper.changeZoom(ui.value);
+    fltCompsWrapper?.changeZoom(ui.value);
   }
 }
 
@@ -64,6 +164,7 @@ export function switchComputers(computerIdx) {
 }
 
 export function changeZoom() {
+  console.log(fltCompsWrapper);
   if (fltCompsWrapper != undefined) {
     fltCompsWrapper.changeZoom(
       parseInt(document.getElementById("tbZoom").value)
@@ -109,21 +210,25 @@ export function clearDrawings() {
 export function incZoom() {
   var currentValue = parseInt(document.getElementById("tbZoom").value);
 
-  currentValue += 10;
+  if (currentValue < 200) currentValue += 10;
 
   document.getElementById("tbZoom").value = currentValue;
 
-  fltCompsWrapper?.changeZoom(currentValue);
+  zoomUpdateSlider(currentValue);
+
+  //   fltCompsWrapper?.changeZoom(currentValue);
 }
 
 export function decZoom() {
   var currentValue = parseInt(document.getElementById("tbZoom").value);
 
-  currentValue -= 10;
+  if (currentValue > 40) currentValue -= 10;
 
   document.getElementById("tbZoom").value = currentValue;
 
-  fltCompsWrapper.changeZoom(currentValue);
+  zoomUpdateSlider(currentValue);
+
+  //   fltCompsWrapper.changeZoom(currentValue);
 }
 
 // FlightComputersWrapper

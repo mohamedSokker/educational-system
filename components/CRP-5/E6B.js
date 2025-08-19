@@ -1,3 +1,5 @@
+import { ShapeDot, ShapeLine } from "./DrawingShape";
+
 export // constructor; has to be called with references to respective layers
 class E6B {
   constructor(

@@ -115,7 +115,7 @@ const CRP5Page = () => {
                         type="text"
                         id="tbZoom"
                         onChange={changeZoom}
-                        value="10"
+                        value="50"
                         className="hidden"
                       />
                       <div className="ui-slider-dot mt-[15px] mr-[0] mb-[15px] ml-[23px]">
